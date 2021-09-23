@@ -1,0 +1,158 @@
+﻿@page "/shopping"
+@using Indkob.Shared
+
+<h1>Shopping</h1>
+<p>
+    <input placeholder="New ware" @bind="newItem" />
+    <button @onclick="AddNewItem">Add to list</button>
+</p>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Price (DKK)</th>
+            <th>
+                Add amount
+                <input placeholder="Amount" @bind="newAmount" />
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Item in Items)
+        {
+            <tr>
+                <td>@Item.Name</td>
+                <td>@Item.Price</td>
+                <td>
+                    <button @onclick="() => AddItem(Item.Name)">Add item</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+
+
+
+@if (TjekList() == true)
+{
+    <h1>Shoppinglist</h1>
+    <p>
+        Amount to buy: @Total() pieces
+    </p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>List</th>
+            <th>Amount</th>
+            <th>Total price (DKK)</th>
+            <th>Bought</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Item in Items)
+        {
+            if (Item.Amount > 0)
+            {
+                if (Item.IsBought == true)
+                {
+                    <tr style="text-decoration: line-through">
+                        <td>@Item.Name</td>
+                        <td>@Item.Amount</td>
+                        <td>@(Item.Amount * Item.Price)</td>
+                        <td>
+                            <input type="checkbox" @bind="Item.IsBought">
+                        </td>
+                        <td>
+                            <button @onclick="() => RemoveItem(Item.Name)">Remove from list</button>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>@Item.Name</td>
+                        <td>@Item.Amount</td>
+                        <td>@(Item.Amount * Item.Price)</td>
+                        <td>
+                            <input type="checkbox" @bind="Item.IsBought">
+                        </td>
+                    </tr>
+                }
+
+            }
+
+
+        }
+    </tbody>
+</table>
+}
+
+@code {
+    private string newItem;
+    private int newAmount = 0;
+
+    private static List<ShoppingItem> Items = new()
+    {
+        new ShoppingItem { Name = "Banana", Price = 3, Amount = 0, IsBought = false },
+        new ShoppingItem { Name = "Apple", Price = 2, Amount = 0, IsBought = false },
+        new ShoppingItem { Name = "Orange", Price = 2.5, Amount = 0, IsBought = false },
+        new ShoppingItem { Name = "Kiwi", Price = 1.5, Amount = 0, IsBought = false },
+        new ShoppingItem { Name = "Pear", Price = 2, Amount = 0, IsBought = false },
+        new ShoppingItem { Name = "Grape", Price = 0.5, Amount = 0, IsBought = false }
+
+    };
+    private void AddItem(string name)
+    {
+        foreach (var Item in Items)
+        {
+            if (Item.Name == name)
+            {
+                Item.Amount += newAmount;
+                break;
+            }
+        }
+        newAmount = 0;
+    }
+    private void AddNewItem()
+    {
+        var rand = new Random();
+        if (newItem != "")
+        {
+            Items.Add(new ShoppingItem { Name = newItem, Price = rand.Next(1, 4), Amount = 0, IsBought = false });
+        }
+        newItem = "";
+    }
+
+    private int Total()
+    {
+        int temp = 0;
+        foreach (var Item in Items)
+        {
+            if (Item.IsBought == false)
+            {
+                temp += Item.Amount;
+            }
+        }
+        return temp;
+    }
+    private bool TjekList()
+    {
+        foreach (var Item in Items)
+        {
+
+            if (Item.Amount > 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void RemoveItem(string name)
+    {
+        Items.RemoveAll(a => a.Name == name);
+    }
+}
