@@ -61,7 +61,7 @@
                     <tr style="text-decoration: line-through">
                         <td>@Item.Name</td>
                         <td>@Item.Amount</td>
-                        <td>@(Item.Amount * Item.Price)</td>
+                        <td>0</td>
                         <td>
                             <input type="checkbox" @bind="Item.IsBought">
                         </td>
@@ -75,7 +75,7 @@
                     <tr>
                         <td>@Item.Name</td>
                         <td>@Item.Amount</td>
-                        <td>@(Item.Amount * Item.Price)</td>
+                        <td>0</td>
                         <td>
                             <input type="checkbox" @bind="Item.IsBought">
                         </td>
@@ -91,7 +91,7 @@
 }
 
 @code {
-    private string newItem;
+    private string newItem = "";
     private int newAmount = 0;
 
     private static List<ShoppingItem> Items = new()
@@ -121,7 +121,7 @@
         var rand = new Random();
         if (newItem != "")
         {
-            Items.Add(new ShoppingItem { Name = newItem, Price = rand.Next(1, 4), Amount = 0, IsBought = false });
+            Items.Add(new ShoppingItem { Name = newItem, Price = -rand.Next(1, 4), Amount = 0, IsBought = false });
         }
         newItem = "";
     }
@@ -131,7 +131,7 @@
         int temp = 0;
         foreach (var Item in Items)
         {
-            if (Item.IsBought == false)
+            if (Item.IsBought == true)
             {
                 temp += Item.Amount;
             }
