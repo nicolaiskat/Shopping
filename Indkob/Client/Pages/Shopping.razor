@@ -61,7 +61,7 @@
                     <tr style="text-decoration: line-through">
                         <td>@Item.Name</td>
                         <td>@Item.Amount</td>
-                        <td>0</td>
+                        <td>@(Item.Price * Item.Amount)</td>
                         <td>
                             <input type="checkbox" @bind="Item.IsBought">
                         </td>
@@ -75,7 +75,7 @@
                     <tr>
                         <td>@Item.Name</td>
                         <td>@Item.Amount</td>
-                        <td>0</td>
+                        <td>@(Item.Price * Item.Amount)</td>
                         <td>
                             <input type="checkbox" @bind="Item.IsBought">
                         </td>
@@ -121,7 +121,7 @@
         var rand = new Random();
         if (newItem != "")
         {
-            Items.Add(new ShoppingItem { Name = newItem, Price = -rand.Next(1, 4), Amount = 0, IsBought = false });
+            Items.Add(new ShoppingItem { Name = newItem, Price = rand.Next(1, 4), Amount = 0, IsBought = false });
         }
         newItem = "";
     }
@@ -131,7 +131,7 @@
         int temp = 0;
         foreach (var Item in Items)
         {
-            if (Item.IsBought == true)
+            if (Item.IsBought == false)
             {
                 temp += Item.Amount;
             }
@@ -151,8 +151,20 @@
         return false;
     }
 
-    private void RemoveItem(string name)
+    private void RemoveItem2(string name)
     {
         Items.RemoveAll(a => a.Name == name);
+    }
+    private void RemoveItem(string name)
+    {
+        foreach (var Item in Items)
+        {
+            if (Item.Name == name)
+            {
+                Item.Amount = 0;
+                Item.IsBought = false;
+            }
+        }
+
     }
 }
